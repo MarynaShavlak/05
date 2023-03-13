@@ -24,14 +24,11 @@ const MovieDetails   = () => {
   const [error, setError] = useState(false);
 
   const { movieId } = useParams();
-  // console.log('movieId', movieId );
 
 
   const location = useLocation();
-  // console.log(location);
 
   useEffect(() => {
-    // console.log(typeof movieId);
     async function fetchMovie(movieId) {
       try {
         setIsLoading(true);
@@ -52,9 +49,12 @@ const MovieDetails   = () => {
     return null;
   }
 
+  const backLinkHref = location.state?.from ?? '/';
+
+
   return (
     <Main>
-      <Link to={location.state?.from ?? '/'}>
+      <Link to={backLinkHref} >
         <IconButton aria-label='Back to previous page'>
             {renderIcons('back', iconSize.sm)}
         </IconButton>
@@ -73,9 +73,9 @@ const MovieDetails   = () => {
           </li>
         </LinksList>
       </AdditionalInfo>
-      {/* <Suspense fallback={<div>Loading</div>}> */}
+      <Suspense > 
         <Outlet />
-      {/* </Suspense> */}
+      </Suspense>
     </Main>
   );
 };

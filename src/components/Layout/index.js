@@ -1,1 +1,1 @@
-export { Layout } from './Layout.jsx';
+export { Layout } from './Layout';

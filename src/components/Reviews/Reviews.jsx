@@ -7,6 +7,7 @@ import { Notification } from 'components/Notification';
 
 const Reviews = () => {
   const [movieReviews, setMovieReviews] = useState([]);
+  const [isReviewsHidden, setIsReviewsHidden] = useState(true);
   const { movieId } = useParams();
   const [error, setError] = useState(false);
 
@@ -20,6 +21,9 @@ const Reviews = () => {
       } catch {
         setError(true);
       }
+      finally {
+        setIsReviewsHidden(false);
+      }
     }
 
   fetchMovieReviews(movieId)
@@ -32,18 +36,18 @@ const Reviews = () => {
 
   return (
     <>
-      {/* {error && <p>Something went wrong. Please try again</p> } */}
-      {movieReviews.length === 0
-        ? (<Notification>Sorry, but there are no reviews for this movie.</Notification>)
-        : (
-          <ReviewsList>
-            {movieReviews.map(review => (
-              <li key={review.id}>
-                <ReviewCard review={review}></ReviewCard>
-              </li>
+      {error && <p>Something went wrong. Please try again</p>}
+      {isReviewsHidden === false &&
+        (movieReviews.length > 0
+        ? <ReviewsList>
+          {movieReviews.map(review => (
+            <li key={review.id}>
+              <ReviewCard review={review}></ReviewCard>
+            </li>
             ))}
         </ReviewsList>
-      )}
+        : <Notification>Sorry, but there are no reviews for this movie.</Notification>
+        )}
     </>
   );
 };

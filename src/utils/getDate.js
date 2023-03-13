@@ -1,6 +1,6 @@
-import { parseISO } from 'date-fns';
+import { parseISO, formatDistanceToNow } from 'date-fns';
 
-export function getUserDate(date) {
+export function getReviewDate(date) {
   const parsedDate = parseISO(date);
   const hours = pad(parsedDate.getHours());
   const minutes = pad(parsedDate.getMinutes());
@@ -17,4 +17,9 @@ export function getUserDate(date) {
 
 function pad(value) {
   return String(value).padStart(2, '0');
+}
+
+export function getLastTimeUpdatedDate(date) {
+  const data = parseISO(date);
+  return formatDistanceToNow(data);
 }

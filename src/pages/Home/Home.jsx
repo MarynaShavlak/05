@@ -1,42 +1,49 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
 import * as API from 'services/api';
 import { MovieGallery } from 'components/MovieGallery';
+import { Pagination } from 'components/Pagination';
+
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [totalPages, setTotalPages] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isGalleryShown, setIsGalleryShown] = useState(false);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    async function fetchMovies() {
+    async function fetchMovies(page) {
       try {
-        setIsLoading(true);
-        const movies = await API.getTrendingMovies();
+
+        const data= await API.getTrendingMovies(page);
+        const { results: movies, total_pages } = data;
+        setTotalPages(total_pages);
         setMovies(movies);
         setError(false);
       } catch {
         setError(true);
       } finally {
-        setIsLoading(false);
+        setIsGalleryShown(true);
       }
     };
-    fetchMovies();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    fetchMovies(currentPage);
+  }, [currentPage]);
+
+
+  const onPageChange = e => {
+    console.log(e);
+    console.log(currentPage);
+    setCurrentPage(e.selected+1)
+  }
 
   return (
     <main>
       <MovieGallery movies={movies}></MovieGallery>
-      {/* <List>
-      {movies.map(({id, title}) => (
-        <li key={id}>
-          <ListLink to={`movies/${id}`}>
-            {renderIcons('movie',iconSize.sm)}
-            {title}
-          </ListLink>
-        </li>
-      ))}
-    </List> */}
+      {isGalleryShown && movies.length !== 0 && 
+        <Pagination totalPages={totalPages} onPageChange={onPageChange}></Pagination>
+      }
+      
     </main>
     
   );

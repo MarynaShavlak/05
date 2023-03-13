@@ -7,8 +7,8 @@ import { ErrorMessage } from 'components/ErrorMessage';
 
 const Cast = () => {
   const [movieCast, setMovieCast] = useState([]);
+  const [isCastHidden, setIsCastHidden] = useState(true);
   const [error, setError] = useState(false);
-
   const { movieId } = useParams();
   
 
@@ -18,9 +18,13 @@ const Cast = () => {
       try {
         const cast = await API.getMovieCast(movieId);
         setMovieCast(cast);
+
         setError(false);
       } catch {
         setError(true);
+      }
+      finally {
+        setIsCastHidden(false);
       }
     }
 
@@ -32,37 +36,40 @@ const Cast = () => {
     return null;
   }
 
+  console.log({ movieCast, isCastHidden })
+
   return (
     <>
-      {movieCast.length === 0
-        ? (<Notification>Sorry, but there is no info about cast of this movie.</Notification>)
-        : (
-          <CastList>
-            {error && <ErrorMessage>Something went wrong. Please try again</ErrorMessage>}
-      
-            {movieCast.map(({ id, profile_path, name, character }) => {
-              return (
-                <ListItem key={id}>
-                    <Image
-                    src={
-                      profile_path
-                        ? `https://image.tmdb.org/t/p/original${profile_path}`
-                        : 'https://www.reachingoutacrossdurham.co.uk/app/uploads/2021/04/Staff-Profile-Image-Placeholder-01-300x300.png'
-                    }
-                    alt={name}
-                  
-                    />
-                  <ActorInfo>
-                    <h4>{name}</h4>
-                    <p><span>Character:</span> <span>{character}</span></p>
+        {error && <ErrorMessage>Something went wrong. Please try again</ErrorMessage>}
+        {isCastHidden === false  && (movieCast.length > 0
+        ? <CastList>
+          {(movieCast.map(({ id, profile_path, name, character }) => {
+            return (
+              <ListItem key={id}>
+                <Image
+                  src={
+                    profile_path
+                      ? `https://image.tmdb.org/t/p/original${profile_path}`
+                      : 'https://www.reachingoutacrossdurham.co.uk/app/uploads/2021/04/Staff-Profile-Image-Placeholder-01-300x300.png'
+                  }
+                  alt={name}
                     
-                  </ActorInfo>
-                </ListItem>
-              );
-            })}
-          </CastList>)}
+                />
+                <ActorInfo>
+                  <h4>{name}</h4>
+                  <p>{character}</p>
+                      
+                </ActorInfo>
+              </ListItem>
+            );
+          }))}
+          </CastList>
+        : <Notification>Sorry, but there is no info about cast of this movie.</Notification>
+        )}
     </>
   );
 };
+
+
 
 export default Cast;

@@ -1,7 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 
 import 'modern-normalize';
-export const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle`
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -19,7 +19,7 @@ code {
 h1,
 h2,
 h3,
-h4
+h4,
 p {
   margin-top: 0;
   margin-bottom: 0;
@@ -38,7 +38,6 @@ img {
 }
 
 button {
-
   margin: 0;
   padding: 0;
   font-family: inherit;
@@ -51,3 +50,4 @@ a {
 
 
 `;
+export default GlobalStyle;

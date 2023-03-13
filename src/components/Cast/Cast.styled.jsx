@@ -44,6 +44,7 @@ export const ActorInfo = styled.div`
     font-weight: 500;
     font-style: italic;
     margin: 0;
+    text-align: center;
   }
 `;
 
