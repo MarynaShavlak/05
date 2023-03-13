@@ -10,29 +10,22 @@ import * as API from 'services/api';
 import * as Notification from 'utils/notifications';
 
 const Movies = () => {
-  const [searchedMovies, setSearchedMovies] = useState([]);
-  const [totalPages, setTotalPages] = useState();
-  const [currentPage, setCurrentPage] = useState(1);
+   const [searchedMovies, setSearchedMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isGalleryShown, setIsGalleryShown] = useState(false);
   const [error, setError] = useState(false);
 
+  
+  const [totalPages, setTotalPages] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const queryValue = searchParams.get("query");
   const pageValue = searchParams.get("page");
-  console.log('pageValue: ', pageValue);
+
   
   const searchInputRef = useRef();
-
   const location = useLocation();
-
-  useEffect(() => {
-    if (pageValue) {
-      setCurrentPage(pageValue);
-    }
-  },[])
-
-
 
   useEffect(() => {
 
@@ -47,7 +40,7 @@ const Movies = () => {
         if (movies.length === 0) {
          return Notification.showFailureNotification();
         }
-        if (movies.length && currentPage === 1) {
+        if (movies.length && pageValue === 1) {
           Notification.showSuccessNotification(total_results);
         }
         setTotalPages(total_pages);
@@ -61,32 +54,29 @@ const Movies = () => {
       }
     };
 
-    fetchMoviesByQuery(queryValue, currentPage);
-  }, [queryValue, currentPage]);
+    fetchMoviesByQuery(queryValue, pageValue);
+  }, [queryValue, pageValue]);
 
 
-  const handleSubmit = e => {
-      const movieQuery = searchInputRef.current.value;
-      e.preventDefault();
-
+    const handleSubmit = e => {
+    e.preventDefault();
+    const movieQuery = searchInputRef.current.value;
+    
       if (!movieQuery) {
         setSearchParams({});
         Notification.showWarnNotification();
         return;
       }
-      setSearchParams({ query: movieQuery, page: currentPage })
-      console.log('currentPage: ', currentPage);
-      console.log('movieQuery: ', movieQuery);
+      setSearchParams({ query: movieQuery, page: currentPage });
+    
   }
 
 
-    const onPageChange = e => {
-    console.log(e);
-      console.log(currentPage);
-      console.log(e.selected);
-      setCurrentPage(Number(e.selected) + 1);
-      setSearchParams({ query: queryValue, page: Number(e.selected)+1})
+  const onPageChange = e => {
+    setSearchParams({ query: queryValue, page: e.selected + 1})
   }
+
+
   return (
     <main>
       <SearchFilter>
@@ -105,9 +95,8 @@ const Movies = () => {
         </SearchForm>
       </SearchFilter>
       <MovieGallery movies={searchedMovies} state={{ from: location }}></MovieGallery>
-        {isGalleryShown && searchedMovies.length !== 0 && 
-        // <Pagination totalPages={totalPages} onPageChange={onPageChange} initialPage={String(currentPage)}></Pagination>
-        <Pagination totalPages={totalPages} onPageChange={onPageChange} ></Pagination>
+      {isGalleryShown && searchedMovies.length !== 0 && 
+        <Pagination totalPages={totalPages} onPageChange={onPageChange} />
       }
 
 

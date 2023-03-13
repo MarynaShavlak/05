@@ -109,7 +109,7 @@ MovieCard.propTypes = {
     runtime: PropTypes.number,
     vote_count: PropTypes.number.isRequired,
     release_date: PropTypes.string.isRequired,
-    poster_path: PropTypes.string,
+    // poster_path: PropTypes.string,
     overview: PropTypes.string,
     genres: PropTypes.arrayOf(
       PropTypes.shape({

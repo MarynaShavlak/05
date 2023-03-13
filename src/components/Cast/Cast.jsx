@@ -36,7 +36,6 @@ const Cast = () => {
     return null;
   }
 
-  console.log({ movieCast, isCastHidden })
 
   return (
     <>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import {useSearchParams, useLocation} from "react-router-dom";
 import * as API from 'services/api';
 import { MovieGallery } from 'components/MovieGallery';
 import { Pagination } from 'components/Pagination';
@@ -12,6 +13,12 @@ const Home = () => {
   const [isGalleryShown, setIsGalleryShown] = useState(false);
   const [error, setError] = useState(false);
 
+  const [searchParams, setSearchParams] = useSearchParams({page: 1});
+  const queryValue = searchParams.get("query");
+  const pageValue = searchParams.get("page");
+
+  const location = useLocation();
+
   useEffect(() => {
     async function fetchMovies(page) {
       try {
@@ -20,6 +27,8 @@ const Home = () => {
         const { results: movies, total_pages } = data;
         setTotalPages(total_pages);
         setMovies(movies);
+        setSearchParams({ page: pageValue});
+
         setError(false);
       } catch {
         setError(true);
@@ -27,19 +36,17 @@ const Home = () => {
         setIsGalleryShown(true);
       }
     };
-    fetchMovies(currentPage);
-  }, [currentPage]);
+    fetchMovies(pageValue);
+  }, [pageValue, setSearchParams]);
 
 
   const onPageChange = e => {
-    console.log(e);
-    console.log(currentPage);
-    setCurrentPage(e.selected+1)
+    setSearchParams({ page: e.selected + 1})
   }
 
   return (
     <main>
-      <MovieGallery movies={movies}></MovieGallery>
+      <MovieGallery movies={movies} state={{ from: location }}></MovieGallery>
       {isGalleryShown && movies.length !== 0 && 
         <Pagination totalPages={totalPages} onPageChange={onPageChange}></Pagination>
       }

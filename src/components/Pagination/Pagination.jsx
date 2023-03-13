@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import {useSearchParams,useLocation} from "react-router-dom";
 import ReactPaginate from 'react-paginate';
 
 import { renderIcons } from 'utils/renderIcons';
 import { iconSize } from 'constants';
 
 
-export const Pagination = ({totalPages, onPageChange,initialPage}) => {
-  // const [page, setPage] = useState(1);
+export const Pagination = ({totalPages, onPageChange}) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) - 1;
+  
 
   return (
     <div className="pagination-wrapper">
@@ -16,7 +19,7 @@ export const Pagination = ({totalPages, onPageChange,initialPage}) => {
       previousLabel={renderIcons('left', iconSize.sm)}
         onPageChange={onPageChange}
         pageRangeDisplayed={3}
-        // initialPage={initialPage}
+        initialPage={currentPage}
         marginPagesDisplayed={2}
         pageCount={totalPages}
         pageClassName="page-item"
@@ -40,7 +43,6 @@ export const Pagination = ({totalPages, onPageChange,initialPage}) => {
 
 Pagination.propTypes = {
   totalPages: PropTypes.number.isRequired,
-  // initialPage: PropTypes.string.isRequired,
   onPageChange: PropTypes.func.isRequired,
 };
 
